@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\FuncCall;
 
 class PostController extends Controller
 {
@@ -31,5 +33,23 @@ class PostController extends Controller
         // Post::create($request->all());
 
         return redirect()->route('posts.create')->with("success","Data Inserted Successfully!");
+    }
+
+    public function edit($id){
+        $data = Post::findOrFail($id);
+        // print_r($data);
+        return view('posts/edit',compact('data'));
+    }
+
+    public function update(Request $request,$id){
+        $data=Post::findOrFail($id);
+        $data->update($request->all());
+        return redirect()->route('posts.show')->with("success","Data Upadated Successfully!");
+    }
+
+    public function destroy($id){
+        $remove = Post::findOrFail($id);
+        $remove->delete();
+        return redirect('posts/show')->with("delete","Delete Data Successfully");
     }
 }

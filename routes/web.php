@@ -14,6 +14,11 @@ Route::get('/posts/create',[PostController::class, 'create'])->name('posts.creat
 Route::post('/posts',[PostController::class, 'store'])->name('posts.store');
 Route::get('/posts/show',[PostController::class,'show'])->name('posts.show');
 
+Route::get('/posts/{id}/edit',[PostController::class,'edit']);
+Route::put('/posts/{id}/update',[PostController::class,'update']);
+
+Route::delete('/posts/{id}',[PostController::class,'destroy']);
+
 Route::get('/users', [RegisterController::class,'index'] );
 
 Route::get("/hello/{name?}",function($n="Ravi"){
@@ -50,6 +55,7 @@ Route::get("/hi/{uid?}",function($id=3){
 
 Route::fallback(function () {
     // return response()->view('404', [], 404);
-    return redirect()->route('table');
+    // return redirect()->route('table');
+    return "404";
 });
 
