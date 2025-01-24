@@ -19,12 +19,14 @@
         <a href="{{ route('posts.create') }}">Add</a>
         <table class="table table-hover">
             <tr class="table-danger">
+                <th>S/No</th>
                 <th>Title</th>
                 <th>Content</th>
                 <th colspan="2">Actions</th>
             </tr>
             @foreach($data as $d)
             <tr>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $d->title }}</td>
                 <td>{{ $d->content }}</td>
                 <td><a href="{{ url('posts/'.$d->id.'/edit') }}">Edit</a></td>
