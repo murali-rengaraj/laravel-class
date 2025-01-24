@@ -1,5 +1,9 @@
-## Created table with 4 fields (table name: Post)
+## Products
 
-## Data Insert Using Form (posts\create.blade.php)
+## Created ProductController
 
-## View Data (posts\show.blade.php)
+## in Products folder (resources/view)
+## View Products
+## Add new Products
+## Edit products
+## Delete products
