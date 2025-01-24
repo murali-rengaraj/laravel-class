@@ -2,14 +2,32 @@
 
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-// create table 
+// Route::get('/', function () {
+//     return view('post');
+// });
+Route::get('/',[ProductController::class,'index']);
+Route::get('/products/create',function(){
+    return view('products.create');
+});
+Route::post('/products/store',[ProductController::class,'store']); 
+Route::get('/products/edit/{id}',[ProductController::class,'edit']);
+Route::put('/products/edit',[ProductController::class,'update']);
+Route::delete('/products/destroy',[ProductController::class,'destroy']);
+
+Route::get('/tasks/imageResize',function(){
+    return view('tasks/resize');
+});
+Route::post('/tasks/imageResize',[ProductController::class,'imageResize']);
+
+
+
+ 
+// Route::get('/',[PostController::class,"show"]);
 Route::get('/posts/create',[PostController::class, 'create'])->name('posts.create');
 Route::post('/posts',[PostController::class, 'store'])->name('posts.store');
 Route::get('/posts/show',[PostController::class,'show'])->name('posts.show');
