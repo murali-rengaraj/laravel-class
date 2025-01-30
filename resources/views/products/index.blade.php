@@ -40,7 +40,7 @@
                 <form action="{{ url('products/destroy') }}" method="post">
                     @csrf
                     @method("DELETE")
-                    <button class="btn-sm btn-danger border-0" value="{{ $r->id }}" name="id">
+                    <button class="btn-sm btn-danger border-0" value="{{ $r->id }}" name="id" onclick="return confirm('Are you sure?')" type="submit">
                         Delete
                     </button>
                 </form>

@@ -6,7 +6,7 @@ use App\Models\Products;
 use Illuminate\Http\Request;
 
 
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Facades\Image as Image;
 
 class ProductController extends Controller
 {
@@ -21,7 +21,12 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-
+        $request->validate([
+            'name' => 'required|string|unique:products,name|regex:/^[A-z ]*$/|min:3|max:12',
+            'price' => 'required|numeric|digits_between:1,10',
+            'desc' => 'required|string|min:5',
+            'img' => 'required|file|mimes:jpeg,png,jpg,gif|max:10240',
+        ]);
         // $request->validate([
         //     'img' => 'required|file|mimes:jpeg,png,jpg,gif|size:2048|dimensions:min_width=100,min_height=100,max_width=2000,max_height=2000',
         // ]); //2mb limit
@@ -58,30 +63,40 @@ class ProductController extends Controller
         $result = Products::find($id);
 
         // return view('/products/edit',compact('result'));
-        return view('/products/edit', ['result' => $result]);
+        return view('products.edit', ['result' => $result]);
     }
 
     public function update(Request $request)
     {
-        $result = Products::findOrFail($request->id);
+        $request->validate([
+            'name' => 'required|string|regex:/^[A-z ]*$/|min:3|max:12',
+            'price' => 'required|numeric|digits_between:1,10',
+            'desc' => 'required|string|min:5',
+            'img' => 'nullable|file|mimes:jpeg,png,jpg,gif|max:10240',
+        ]);
 
-        $prevImgName = $result->image_name;
-        // $dir= asset('productImages/'.$prevImgName);
-        $dir = public_path('productImages/' . $prevImgName);
-        if (file_exists($dir)) {
-            unlink($dir);
-            // echo "Deleted Successfully <br>";
+        $result = Products::findOrFail($request->id);
+        $Dir = $result->image_name;
+        if (!empty($request->img)) {
+            // echo "image";
+            // exit;
+            $prevImgName = $result->image_name;
+            $dir = public_path('productImages/' . $prevImgName);
+            if (file_exists($dir)) {
+                unlink($dir);
+                // echo "Deleted Successfully <br>";
+            }
+            // echo $request->img->extension();
+            // echo $request->img->getClientOriginalName();
+            $Dir = time() . "." . $request->img->extension();
+            $request->img->move(public_path("productImages"), $Dir);
         }
-        // echo $request->img->extension();
-        // echo $request->img->getClientOriginalName();
-        $newDir = time() . "." . $request->img->extension();
-        $request->img->move(public_path("productImages"), $newDir);
 
         // $result->update($request->all());
         $result->name = $request->name;
         $result->price = $request->price;
         $result->description = $request->desc;
-        $result->image_name = $newDir;
+        $result->image_name = $Dir;
         $result->save();
 
         return redirect('/')->with("success", "Data Updated Successfully!");
@@ -92,6 +107,11 @@ class ProductController extends Controller
         // echo $request->id;
         // exit;
         $detete = Products::findOrFail($request->id);
+        $dir= public_path('productImages/' . $detete->image_name );
+        if(file_exists($dir)){
+            unlink($dir);
+        }
+
         $detete->delete();
 
         return back()->with("success", "Data Deleted Successfully!");;
